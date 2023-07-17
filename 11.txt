@@ -1,0 +1,17 @@
+import threading
+
+class CubeThread(threading.Thread):
+    def run(self):
+        cubes = self.calculate_cubes(10000)
+        print(f"Cubes: {cubes[0]} - {cubes[-1]}")
+    
+    def calculate_cubes(self, n):
+        return [i**3 for i in range(1, n+1)]
+
+def main():
+    cube_thread = CubeThread()
+    cube_thread.start()
+    cube_thread.join()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+int main() {
+  int sockfd;
+  struct sockaddr_in serveraddr;
+  int random_number;
+  int is_prime;
+
+  // Create a socket
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (sockfd == -1) {
+    perror("socket");
+    exit(1);
+  }
+
+  // Set up the server address
+  serveraddr.sin_family = AF_INET;
+  serveraddr.sin_port = htons(8080);
+  serveraddr.sin_addr.s_addr = INADDR_ANY;
+
+  // Connect to the server
+  if (connect(sockfd, (struct sockaddr *)&serveraddr, sizeof(serveraddr)) == -1) {
+    perror("connect");
+    exit(1);
+  }
+
+  // Get the random number from the user
+  printf("Enter a number: ");
+  scanf("%d", &random_number);
+
+  // Send the random number to the server
+  send(sockfd, &random_number, sizeof(random_number), 0);
+
+  // Receive the result from the server
+  recv(sockfd, &is_prime, sizeof(is_prime), 0);
+
+  // Print the result
+  if (is_prime == 1) {
+    printf("The number is prime.\n");
+  } else {
+    printf("The number is not prime.\n");
+  }
+
+  // Close the socket
+  close(sockfd);
+
+  return 0;
+}

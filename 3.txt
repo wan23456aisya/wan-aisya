@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+  int pipefd[2];
+  int pid;
+  char message[100];
+
+  // Create a pipe
+  pipe(pipefd);
+
+  // Fork 3 child processes
+  for (int i = 0; i < 3; i++) {
+    pid = fork();
+    if (pid == 0) {
+      // This is the child process
+
+      // Send a message to the parent process
+      sprintf(message, "This is child process %d", i);
+      write(pipefd[1], message, sizeof(message));
+
+      // Terminate the child process
+      exit(0);
+    }
+  }
+
+  // This is the parent process
+
+  // Read the message from the child process
+  read(pipefd[0], message, sizeof(message));
+  printf("Received message from child process: %s\n", message);
+
+  // Wait for the child processes to terminate
+  for (int i = 0; i < 3; i++) {
+    wait(NULL);
+  }
+
+  return 0;
+}
+

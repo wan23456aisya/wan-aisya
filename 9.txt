@@ -1,0 +1,44 @@
+import threading
+
+class FibonacciThread(threading.Thread):
+    def run(self):
+        fib_series = self.fibonacci(10000)
+        print(f"Fibonacci Series: {fib_series[0]} - {fib_series[-1]}")
+    
+    def fibonacci(self, n):
+        fib_list = [0, 1]
+        for i in range(2, n):
+            fib_list.append(fib_list[-1] + fib_list[-2])
+        return fib_list
+
+class SquareThread(threading.Thread):
+    def run(self):
+        squares = self.calculate_squares(10000)
+        print(f"Squares: {squares[0]} - {squares[-1]}")
+    
+    def calculate_squares(self, n):
+        return [i**2 for i in range(n)]
+
+class CubeThread(threading.Thread):
+    def run(self):
+        cubes = self.calculate_cubes(10000)
+        print(f"Cubes: {cubes[0]} - {cubes[-1]}")
+    
+    def calculate_cubes(self, n):
+        return [i**3 for i in range(n)]
+
+def main():
+    fibonacci_thread = FibonacciThread()
+    square_thread = SquareThread()
+    cube_thread = CubeThread()
+
+    fibonacci_thread.start()
+    square_thread.start()
+    cube_thread.start()
+
+    fibonacci_thread.join()
+    square_thread.join()
+    cube_thread.join()
+
+if __name__ == "__main__":
+    main()
